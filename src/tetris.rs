@@ -27,6 +27,10 @@ impl Tetris {
         }
     }
 
+    pub fn is_current_shape_at_position(&self, pos: Pos) -> bool {
+        self.current_shape.has_position(pos)
+    }
+
     pub fn iter_positions(&self) -> impl Iterator<Item = Pos> {
         let width = self.width;
         let height = self.height;
@@ -142,6 +146,17 @@ impl Tetris {
         {
             self.current_shape = rotated_current_shape;
         }
+    }
+
+    pub fn predict_landing_position(&self) -> Shape {
+        let mut predicted_shape = self.current_shape.clone();
+
+        while !self.is_out_of_bounds(&predicted_shape) && !self.is_colliding(&predicted_shape) {
+            predicted_shape = &predicted_shape + Pos(0, 1);
+        }
+
+        // Move back one step since the last position is out of bounds or colliding
+        &predicted_shape + Pos(0, -1)
     }
 }
 

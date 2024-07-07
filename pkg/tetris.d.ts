@@ -76,13 +76,13 @@ export interface InitOutput {
   readonly wasmreact_useReact: (a: number) => void;
   readonly __wbg_wasmreact_free: (a: number) => void;
   readonly __wbindgen_export_0: WebAssembly.Table;
-  readonly _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h84493b43ff90243e: (a: number, b: number) => number;
-  readonly _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h9ea85429d94ebdcb: (a: number, b: number) => void;
-  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hc6c1d772358aa7a6: (a: number, b: number, c: number) => number;
-  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h121525b19269b431: (a: number, b: number, c: number) => void;
+  readonly _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h3c9f26df040105ae: (a: number, b: number) => void;
+  readonly _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h4f8aee0f540e9e82: (a: number, b: number) => number;
+  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h51e939205cc6dfa0: (a: number, b: number, c: number) => number;
+  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h245a7557a062fec0: (a: number, b: number, c: number) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_exn_store: (a: number) => void;
-  readonly wasm_bindgen__convert__closures__invoke1_mut_ref__hf6805b9dbe95b53d: (a: number, b: number, c: number) => void;
+  readonly wasm_bindgen__convert__closures__invoke1_mut_ref__h2bc7fe72120494f5: (a: number, b: number, c: number) => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
 }

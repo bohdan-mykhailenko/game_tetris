@@ -9,7 +9,7 @@ use wasm_react::{
     props::Style,
     Component,
 };
-use web_sys::{ window, Element, HtmlElement, KeyboardEvent };
+use web_sys::{ console, window, Element, HtmlElement, KeyboardEvent };
 
 mod shape;
 mod tetris;
@@ -140,14 +140,11 @@ impl Component for App {
             .tabindex(0)
             .on_keydown(&handle_key_down)
             .on_keyup(&handle_key_up)
+            .class_name("grid__container")
             .style(
-                &Style::new()
-                    .display("inline-grid")
-                    .grid_template(
-                        format!("repeat({}, 1em) / repeat({}, 1em)", self.height, self.width)
-                    )
-                    .border("1px solid grey")
-                    .outline("none")
+                &Style::new().grid_template(
+                    format!("repeat({}, 1.5rem) / repeat({}, 1.5rem)", self.height, self.width)
+                )
             )
             .build(
                 c![
@@ -156,10 +153,28 @@ impl Component for App {
                         .iter_positions()
                         .map(|pos| {
                             let typ = tetris.value().get(pos);
+                            let predicted_shape = tetris.value().predict_landing_position();
+
+                            console::log_1(&JsValue::from_str(typ.unwrap_or_default()));
+
+                            // Check if the position is part of the predicted shape
+                            if
+                                predicted_shape.has_position(pos) &&
+                                !tetris.value().is_current_shape_at_position(pos)
+                            {
+                                return h!(div)
+                                    .class_name("grid__item--preview")
+                                    .build(c![typ.unwrap_or_default()]);
+                            }
+
+                            let class_name = format!(
+                                "grid__item grid__item--{}",
+                                typ.unwrap_or_default()
+                            );
 
                             h!(div)
-                                .style(&Style::new().text_indent("-.2em").margin_top("-.2em"))
-                                .build(c![typ.unwrap_or_default()])
+                                .class_name(class_name.as_str())
+                                .build(c![])
                         })
                 ]
             )
