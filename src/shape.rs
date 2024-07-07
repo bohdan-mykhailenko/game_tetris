@@ -1,6 +1,6 @@
 use std::{ collections::HashSet, ops::Add };
 
-#[derive(Debug, Clone, Hash, Copy, PartialEq, Eq)]
+#[derive(Debug, Hash, PartialEq, Eq, Clone, Copy)]
 pub struct Pos(pub i32, pub i32);
 
 impl Add for Pos {
@@ -23,9 +23,9 @@ macro_rules! impl_shape_constructor {
     $(
       pub fn $new() -> Self {
         Self {
-            typ:$typ,
-            positions: [$( $pos ),*].into_iter().collect(),
-            anchor: $anchor,
+          typ: $typ,
+          positions: [$( $pos ),*].into_iter().collect(),
+          anchor: $anchor,
         }
       }
     )*
@@ -34,17 +34,17 @@ macro_rules! impl_shape_constructor {
 
 impl Shape {
     impl_shape_constructor! {
-        new_i "🟦": [Pos(0, 0), Pos(1, 0), Pos(2, 0), Pos(3, 0)] @ Pos(1, 0);
-        new_o "🟨": [Pos(0, 0), Pos(1, 0), Pos(0, 1), Pos(1, 1)] @ Pos(0, 0);
-        new_t "🟫": [Pos(0, 0), Pos(1, 0), Pos(2, 0), Pos(1, 1)] @ Pos(1, 0);
-        new_j "🟪": [Pos(0, 0), Pos(0, 1), Pos(0, 2), Pos(-1, 2)] @ Pos(0, 1);
-        new_l "🟧": [Pos(0, 0), Pos(0, 1), Pos(0, 2), Pos(1, 2)] @ Pos(0, 1);
-        new_s "🟩": [Pos(0, 0), Pos(1, 0), Pos(0, 1), Pos(-1, 1)] @ Pos(0, 0);
-        new_z "🟥": [Pos(0, 0), Pos(-1, 0), Pos(0, 1), Pos(1, 1)] @ Pos(0, 0);
-    }
+    new_i "🟦": [Pos(0, 0), Pos(1, 0), Pos(2, 0), Pos(3, 0)] @ Pos(1, 0);
+    new_o "🟨": [Pos(0, 0), Pos(1, 0), Pos(0, 1), Pos(1, 1)] @ Pos(0, 0);
+    new_t "🟫": [Pos(0, 0), Pos(1, 0), Pos(2, 0), Pos(1, 1)] @ Pos(1, 0);
+    new_j "🟪": [Pos(0, 0), Pos(0, 1), Pos(0, 2), Pos(-1, 2)] @ Pos(0, 1);
+    new_l "🟧": [Pos(0, 0), Pos(0, 1), Pos(0, 2), Pos(1, 2)] @ Pos(0, 1);
+    new_s "🟩": [Pos(0, 0), Pos(1, 0), Pos(0, 1), Pos(-1, 1)] @ Pos(0, 0);
+    new_z "🟥": [Pos(0, 0), Pos(-1, 0), Pos(0, 1), Pos(1, 1)] @ Pos(0, 0);
+  }
 
     pub fn new_random() -> Self {
-        let random: u8 = (rand::random::<f64>() * 7.0).floor() as u8;
+        let random = (rand::random::<f64>() * 7.0).floor() as u8;
 
         match random {
             0 => Self::new_i(),
@@ -62,12 +62,12 @@ impl Shape {
         self.typ
     }
 
-    pub fn has_position(&self, pos: Pos) -> bool {
-        self.positions.contains(&pos)
-    }
-
     pub fn iter_positions(&self) -> impl Iterator<Item = Pos> + '_ {
         self.positions.iter().copied()
+    }
+
+    pub fn has_position(&self, pos: Pos) -> bool {
+        self.positions.contains(&pos)
     }
 
     pub fn collides_with(&self, other: &Shape) -> bool {
@@ -107,7 +107,7 @@ impl Add<Pos> for &Shape {
             typ: self.typ,
             positions: self.positions
                 .iter()
-                .map(|pos: &Pos| *pos + rhs)
+                .map(|&pos| pos + rhs)
                 .collect(),
             anchor: self.anchor + rhs,
         }

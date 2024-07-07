@@ -1,5 +1,5 @@
-use std::{ collections::HashSet, mem };
 use crate::shape::{ Pos, Shape };
+use std::{ collections::HashSet, mem };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Direction {
@@ -21,11 +21,12 @@ impl Tetris {
         Self {
             width: width as i32,
             height: height as i32,
-            current_shape: &Shape::new_random() + Pos((width as i32) / 2, 0),
+            current_shape: &Shape::new_random() + Pos(((width as i32) - 1) / 2, 0),
             fixed_shapes: vec![],
             lost: false,
         }
     }
+
     pub fn iter_positions(&self) -> impl Iterator<Item = Pos> {
         let width = self.width;
         let height = self.height;
@@ -47,7 +48,7 @@ impl Tetris {
     pub fn is_out_of_bounds(&self, shape: &Shape) -> bool {
         !shape
             .iter_positions()
-            .all(|pos| 0 <= pos.0 && pos.0 < self.width && 0 <= pos.1 && pos.1 < self.height)
+            .all(|pos| { 0 <= pos.0 && pos.0 < self.width && 0 <= pos.1 && pos.1 < self.height })
     }
 
     pub fn is_colliding(&self, shape: &Shape) -> bool {
@@ -90,11 +91,11 @@ impl Tetris {
             self.is_out_of_bounds(&translated_current_shape) ||
             self.is_colliding(&translated_current_shape)
         {
-            // Move current shape to fixed
+            // Make current shape fixed
 
             let new_fixed_shape = mem::replace(
                 &mut self.current_shape,
-                &Shape::new_random() + Pos(self.width / 2, 0)
+                &Shape::new_random() + Pos((self.width - 1) / 2, 0)
             );
 
             self.fixed_shapes.push(new_fixed_shape);
@@ -121,8 +122,8 @@ impl Tetris {
             });
 
         if
-            !self.is_colliding(&translated_current_shape) &&
-            !self.is_out_of_bounds(&translated_current_shape)
+            !self.is_out_of_bounds(&translated_current_shape) &&
+            !self.is_colliding(&translated_current_shape)
         {
             self.current_shape = translated_current_shape;
         }
@@ -134,9 +135,10 @@ impl Tetris {
         }
 
         let rotated_current_shape = self.current_shape.rotated();
+
         if
-            !self.is_colliding(&rotated_current_shape) &&
-            !self.is_out_of_bounds(&rotated_current_shape)
+            !self.is_out_of_bounds(&rotated_current_shape) &&
+            !self.is_colliding(&rotated_current_shape)
         {
             self.current_shape = rotated_current_shape;
         }
@@ -146,14 +148,14 @@ impl Tetris {
 #[cfg(test)]
 mod tests {
     use super::Tetris;
+
     #[test]
     fn test() {
         let mut tetris = Tetris::new(10, 30);
-
         tetris.tick();
         tetris.tick();
         tetris.tick();
 
-        println!("{:#?}", tetris)
+        println!("{:#?}", tetris);
     }
 }
