@@ -1,7 +1,7 @@
 import "https://unpkg.com/react@18/umd/react.development.js";
 import "https://unpkg.com/react-dom@18/umd/react-dom.development.js";
 
-import init, { App, WasmReact } from "../pkg/tetris_with_wasm.js";
+import init, { App, WasmReact } from "../pkg/tetris.js";
 
 await init();
 
@@ -16,5 +16,3 @@ root.render(
   })
 );
 
-//todo
-//make react\next in web?
