@@ -11,7 +11,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   React.createElement(App, {
-    width: 10,
+    width: 20,
     height: 5,
   })
 );

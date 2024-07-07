@@ -1,5 +1,4 @@
 use js_sys::{ Function, Reflect };
-use tetris::{ Direction, Tetris };
 use wasm_bindgen::{ prelude::Closure, JsCast, JsValue, UnwrapThrowExt };
 use wasm_react::{
     c,
@@ -10,6 +9,7 @@ use wasm_react::{
     Component,
 };
 use web_sys::{ window, Element, HtmlElement, KeyboardEvent };
+use tetris::{ Direction, Tetris };
 
 mod shape;
 mod tetris;
@@ -153,6 +153,17 @@ impl Component for App {
                         .value()
                         .iter_positions()
                         .map(|pos| {
+                            //todo: complete
+                            if
+                                tetris.value().is_lost() &&
+                                tetris.value().is_current_shape_at_position(pos) &&
+                                tetris.value().is_colliding_with_position(pos)
+                            {
+                                return h!(div)
+                                    .class_name("grid__item grid__item--collided")
+                                    .build(c![]);
+                            }
+
                             let typ = tetris.value().get(pos);
                             let predicted_shape = tetris.value().predict_landing_position();
 
@@ -161,7 +172,7 @@ impl Component for App {
                                 !tetris.value().is_current_shape_at_position(pos)
                             {
                                 return h!(div)
-                                    .class_name("grid__item--preview")
+                                    .class_name("grid__item grid__item--preview")
                                     .build(c![typ.unwrap_or_default()]);
                             }
 

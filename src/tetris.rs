@@ -35,6 +35,10 @@ impl Tetris {
         self.lost
     }
 
+    pub fn is_colliding_with_position(&self, pos: Pos) -> bool {
+        self.fixed_shapes.iter().any(|shape| shape.has_position(pos))
+    }
+
     pub fn iter_positions(&self) -> impl Iterator<Item = Pos> {
         let width = self.width;
         let height = self.height;
@@ -89,7 +93,7 @@ impl Tetris {
     }
 
     pub fn tick(&mut self) {
-        if self.lost {
+        if self.is_lost() {
             return;
         }
 

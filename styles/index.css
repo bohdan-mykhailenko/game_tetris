@@ -46,13 +46,11 @@
 }
 
 .grid__item--preview {
-  border: 1px solid gray;
-  background: #cac9c9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  vertical-align: top;
+  background: gray;
+}
+
+.grid__item--collided {
+  background: transparent;
 }
 
 .message__lost {
