@@ -134,6 +134,7 @@ dependencies = [
  "rand",
  "wasm-bindgen",
  "wasm-react",
+ "web-sys",
 ]
 
 [[package]]
