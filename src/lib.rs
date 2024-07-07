@@ -9,7 +9,7 @@ use wasm_react::{
     props::Style,
     Component,
 };
-use web_sys::{ console, window, Element, HtmlElement, KeyboardEvent };
+use web_sys::{ window, Element, HtmlElement, KeyboardEvent };
 
 mod shape;
 mod tetris;
@@ -66,6 +66,7 @@ impl Component for App {
                         move || {
                             tetris.set(|mut tetris| {
                                 tetris.tick();
+
                                 tetris
                             });
                         }
@@ -135,7 +136,7 @@ impl Component for App {
             Deps::none()
         );
 
-        h!(div)
+        let grid_container = h!(div)
             .ref_container(&element_container)
             .tabindex(0)
             .on_keydown(&handle_key_down)
@@ -155,9 +156,6 @@ impl Component for App {
                             let typ = tetris.value().get(pos);
                             let predicted_shape = tetris.value().predict_landing_position();
 
-                            console::log_1(&JsValue::from_str(typ.unwrap_or_default()));
-
-                            // Check if the position is part of the predicted shape
                             if
                                 predicted_shape.has_position(pos) &&
                                 !tetris.value().is_current_shape_at_position(pos)
@@ -177,8 +175,23 @@ impl Component for App {
                                 .build(c![])
                         })
                 ]
-            )
+            );
+
+        // Build the message component
+        let message = if tetris.value().is_lost() {
+            h!(h3).class_name("message__lost").build(c!["Game over"])
+        } else {
+            h!(h3).class_name("message__process").build(c!["Game in process"])
+        };
+
+        // Render both components
+        h!(div).build(c![message, grid_container])
     }
 }
 
 export_components!(App);
+
+//todo
+//- **Scored system**
+// - **End of the game**
+// - **Pause of game**

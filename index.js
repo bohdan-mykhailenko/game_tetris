@@ -12,7 +12,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   React.createElement(App, {
     width: 10,
-    height: 25,
+    height: 5,
   })
 );
 

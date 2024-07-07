@@ -31,6 +31,10 @@ impl Tetris {
         self.current_shape.has_position(pos)
     }
 
+    pub fn is_lost(&self) -> bool {
+        self.lost
+    }
+
     pub fn iter_positions(&self) -> impl Iterator<Item = Pos> {
         let width = self.width;
         let height = self.height;

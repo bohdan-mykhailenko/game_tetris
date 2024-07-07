@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 
-.grid_container {
+.grid__container {
   display: inline-grid;
 
   outline: none;
@@ -53,4 +53,12 @@
   justify-content: center;
   overflow: hidden;
   vertical-align: top;
+}
+
+.message__lost {
+  color: red;
+}
+
+.message__process {
+  color: green;
 }
