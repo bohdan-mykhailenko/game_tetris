@@ -1,4 +1,4 @@
-use std::{ collections::HashSet, ops::Add };
+use std::{collections::HashSet, ops::Add};
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, Copy)]
 pub struct Pos(pub i32, pub i32);
@@ -34,14 +34,14 @@ macro_rules! impl_shape_constructor {
 
 impl Shape {
     impl_shape_constructor! {
-    new_i "i": [Pos(0, 0), Pos(1, 0), Pos(2, 0), Pos(3, 0)] @ Pos(1, 0);
-    new_o "o": [Pos(0, 0), Pos(1, 0), Pos(0, 1), Pos(1, 1)] @ Pos(0, 0);
-    new_t "t": [Pos(0, 0), Pos(1, 0), Pos(2, 0), Pos(1, 1)] @ Pos(1, 0);
-    new_j "j": [Pos(0, 0), Pos(0, 1), Pos(0, 2), Pos(-1, 2)] @ Pos(0, 1);
-    new_l "l": [Pos(0, 0), Pos(0, 1), Pos(0, 2), Pos(1, 2)] @ Pos(0, 1);
-    new_s "s": [Pos(0, 0), Pos(1, 0), Pos(0, 1), Pos(-1, 1)] @ Pos(0, 0);
-    new_z "z": [Pos(0, 0), Pos(-1, 0), Pos(0, 1), Pos(1, 1)] @ Pos(0, 0);
-  }
+      new_i "i": [Pos(0, 0), Pos(1, 0), Pos(2, 0), Pos(3, 0)] @ Pos(1, 0);
+      new_o "o": [Pos(0, 0), Pos(1, 0), Pos(0, 1), Pos(1, 1)] @ Pos(0, 0);
+      new_t "t": [Pos(0, 0), Pos(1, 0), Pos(2, 0), Pos(1, 1)] @ Pos(1, 0);
+      new_j "j": [Pos(0, 0), Pos(0, 1), Pos(0, 2), Pos(-1, 2)] @ Pos(0, 1);
+      new_l "l": [Pos(0, 0), Pos(0, 1), Pos(0, 2), Pos(1, 2)] @ Pos(0, 1);
+      new_s "s": [Pos(0, 0), Pos(1, 0), Pos(0, 1), Pos(-1, 1)] @ Pos(0, 0);
+      new_z "z": [Pos(0, 0), Pos(-1, 0), Pos(0, 1), Pos(1, 1)] @ Pos(0, 0);
+    }
 
     pub fn new_random() -> Self {
         let random = (rand::random::<f64>() * 7.0).floor() as u8;
@@ -88,12 +88,17 @@ impl Shape {
     }
 
     pub fn remove_line(&mut self, y: i32) {
-        self.positions = self.positions
+        self.positions = self
+            .positions
             .iter()
             .copied()
             .filter(|pos| pos.1 != y)
             .map(|pos| {
-                if pos.1 >= y { pos } else { Pos(pos.0, pos.1 + 1) }
+                if pos.1 >= y {
+                    pos
+                } else {
+                    Pos(pos.0, pos.1 + 1)
+                }
             })
             .collect();
     }
@@ -105,10 +110,7 @@ impl Add<Pos> for &Shape {
     fn add(self, rhs: Pos) -> Self::Output {
         Shape {
             typ: self.typ,
-            positions: self.positions
-                .iter()
-                .map(|&pos| pos + rhs)
-                .collect(),
+            positions: self.positions.iter().map(|&pos| pos + rhs).collect(),
             anchor: self.anchor + rhs,
         }
     }

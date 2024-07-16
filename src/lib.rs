@@ -1,15 +1,13 @@
-use js_sys::{ Function, Reflect };
-use wasm_bindgen::{ prelude::Closure, JsCast, JsValue, UnwrapThrowExt };
+use js_sys::{Function, Reflect};
+use tetris::{Direction, Tetris};
+use wasm_bindgen::{prelude::Closure, JsCast, JsValue, UnwrapThrowExt};
 use wasm_react::{
-    c,
-    export_components,
-    h,
-    hooks::{ use_callback, use_effect, use_js_ref, use_state, Deps },
+    c, export_components, h,
+    hooks::{use_callback, use_effect, use_js_ref, use_state, Deps},
     props::Style,
     Component,
 };
-use web_sys::{ window, Element, HtmlElement, KeyboardEvent };
-use tetris::{ Direction, Tetris };
+use web_sys::{window, Element, HtmlElement, KeyboardEvent};
 
 mod shape;
 mod tetris;
@@ -24,8 +22,12 @@ impl TryFrom<JsValue> for App {
 
     fn try_from(value: JsValue) -> Result<Self, Self::Error> {
         Ok(App {
-            width: Reflect::get(&value, &"width".into())?.as_f64().unwrap_or(10.0) as u32,
-            height: Reflect::get(&value, &"height".into())?.as_f64().unwrap_or(30.0) as u32,
+            width: Reflect::get(&value, &"width".into())?
+                .as_f64()
+                .unwrap_or(10.0) as u32,
+            height: Reflect::get(&value, &"height".into())?
+                .as_f64()
+                .unwrap_or(30.0) as u32,
         })
     }
 }
@@ -51,7 +53,7 @@ impl Component for App {
                     || ()
                 }
             },
-            Deps::none()
+            Deps::none(),
         );
 
         use_effect(
@@ -76,7 +78,7 @@ impl Component for App {
                         .unwrap_throw()
                         .set_interval_with_callback_and_timeout_and_arguments_0(
                             tick_closure.as_ref().dyn_ref::<Function>().unwrap_throw(),
-                            speed
+                            speed,
                         )
                         .unwrap_throw();
 
@@ -86,7 +88,7 @@ impl Component for App {
                     }
                 }
             },
-            Deps::some(*speed.value())
+            Deps::some(*speed.value()),
         );
 
         let handle_key_down = use_callback(
@@ -120,7 +122,7 @@ impl Component for App {
                     }
                 }
             },
-            Deps::none()
+            Deps::none(),
         );
 
         let handle_key_up = use_callback(
@@ -133,7 +135,7 @@ impl Component for App {
                     }
                 }
             },
-            Deps::none()
+            Deps::none(),
         );
 
         let grid_container = h!(div)
@@ -142,57 +144,44 @@ impl Component for App {
             .on_keydown(&handle_key_down)
             .on_keyup(&handle_key_up)
             .class_name("grid__container")
-            .style(
-                &Style::new().grid_template(
-                    format!("repeat({}, 1.5rem) / repeat({}, 1.5rem)", self.height, self.width)
-                )
-            )
-            .build(
-                c![
-                    ..tetris
-                        .value()
-                        .iter_positions()
-                        .map(|pos| {
-                            //todo: complete
-                            if
-                                tetris.value().is_lost() &&
-                                tetris.value().is_current_shape_at_position(pos) &&
-                                tetris.value().is_colliding_with_position(pos)
-                            {
-                                return h!(div)
-                                    .class_name("grid__item grid__item--collided")
-                                    .build(c![]);
-                            }
+            .style(&Style::new().grid_template(format!(
+                "repeat({}, 1.5rem) / repeat({}, 1.5rem)",
+                self.height, self.width
+            )))
+            .build(c![..tetris.value().iter_positions().map(|pos| {
+                //todo: complete
+                if tetris.value().is_lost()
+                    && tetris.value().is_current_shape_at_position(pos)
+                    && tetris.value().is_colliding_with_position(pos)
+                {
+                    return h!(div)
+                        .class_name("grid__item grid__item--collided")
+                        .build(c![]);
+                }
 
-                            let typ = tetris.value().get(pos);
-                            let predicted_shape = tetris.value().predict_landing_position();
+                let typ = tetris.value().get(pos);
+                let predicted_shape = tetris.value().predict_landing_position();
 
-                            if
-                                predicted_shape.has_position(pos) &&
-                                !tetris.value().is_current_shape_at_position(pos)
-                            {
-                                return h!(div)
-                                    .class_name("grid__item grid__item--preview")
-                                    .build(c![typ.unwrap_or_default()]);
-                            }
+                if predicted_shape.has_position(pos)
+                    && !tetris.value().is_current_shape_at_position(pos)
+                {
+                    return h!(div)
+                        .class_name("grid__item grid__item--preview")
+                        .build(c![typ.unwrap_or_default()]);
+                }
 
-                            let class_name = format!(
-                                "grid__item grid__item--{}",
-                                typ.unwrap_or_default()
-                            );
+                let class_name = format!("grid__item grid__item--{}", typ.unwrap_or_default());
 
-                            h!(div)
-                                .class_name(class_name.as_str())
-                                .build(c![])
-                        })
-                ]
-            );
+                h!(div).class_name(class_name.as_str()).build(c![])
+            })]);
 
         // Build the message component
         let message = if tetris.value().is_lost() {
             h!(h3).class_name("message__lost").build(c!["Game over"])
         } else {
-            h!(h3).class_name("message__process").build(c!["Game in process"])
+            h!(h3)
+                .class_name("message__process")
+                .build(c!["Game in process"])
         };
 
         // Render both components

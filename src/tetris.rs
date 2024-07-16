@@ -1,5 +1,5 @@
-use crate::shape::{ Pos, Shape };
-use std::{ collections::HashSet, mem };
+use crate::shape::{Pos, Shape};
+use std::{collections::HashSet, mem};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Direction {
@@ -36,7 +36,9 @@ impl Tetris {
     }
 
     pub fn is_colliding_with_position(&self, pos: Pos) -> bool {
-        self.fixed_shapes.iter().any(|shape| shape.has_position(pos))
+        self.fixed_shapes
+            .iter()
+            .any(|shape| shape.has_position(pos))
     }
 
     pub fn iter_positions(&self) -> impl Iterator<Item = Pos> {
@@ -60,22 +62,24 @@ impl Tetris {
     pub fn is_out_of_bounds(&self, shape: &Shape) -> bool {
         !shape
             .iter_positions()
-            .all(|pos| { 0 <= pos.0 && pos.0 < self.width && 0 <= pos.1 && pos.1 < self.height })
+            .all(|pos| 0 <= pos.0 && pos.0 < self.width && 0 <= pos.1 && pos.1 < self.height)
     }
 
     pub fn is_colliding(&self, shape: &Shape) -> bool {
-        self.fixed_shapes.iter().any(|fixed_shape| fixed_shape.collides_with(shape))
+        self.fixed_shapes
+            .iter()
+            .any(|fixed_shape| fixed_shape.collides_with(shape))
     }
 
     pub fn is_line_full(&self, y: i32) -> bool {
-        (
-            self.fixed_shapes
-                .iter()
-                .flat_map(|shape| shape.iter_positions())
-                .filter(|pos| pos.1 == y)
-                .collect::<HashSet<_>>()
-                .len() as i32
-        ) == self.width
+        (self
+            .fixed_shapes
+            .iter()
+            .flat_map(|shape| shape.iter_positions())
+            .filter(|pos| pos.1 == y)
+            .collect::<HashSet<_>>()
+            .len() as i32)
+            == self.width
     }
 
     fn remove_line(&mut self, y: i32) {
@@ -99,15 +103,14 @@ impl Tetris {
 
         let translated_current_shape = &self.current_shape + Pos(0, 1);
 
-        if
-            self.is_out_of_bounds(&translated_current_shape) ||
-            self.is_colliding(&translated_current_shape)
+        if self.is_out_of_bounds(&translated_current_shape)
+            || self.is_colliding(&translated_current_shape)
         {
             // Make current shape fixed
 
             let new_fixed_shape = mem::replace(
                 &mut self.current_shape,
-                &Shape::new_random() + Pos((self.width - 1) / 2, 0)
+                &Shape::new_random() + Pos((self.width - 1) / 2, 0),
             );
 
             self.fixed_shapes.push(new_fixed_shape);
@@ -126,16 +129,14 @@ impl Tetris {
             return;
         }
 
-        let translated_current_shape =
-            &self.current_shape +
-            (match direction {
+        let translated_current_shape = &self.current_shape
+            + (match direction {
                 Direction::Left => Pos(-1, 0),
                 Direction::Right => Pos(1, 0),
             });
 
-        if
-            !self.is_out_of_bounds(&translated_current_shape) &&
-            !self.is_colliding(&translated_current_shape)
+        if !self.is_out_of_bounds(&translated_current_shape)
+            && !self.is_colliding(&translated_current_shape)
         {
             self.current_shape = translated_current_shape;
         }
@@ -148,9 +149,8 @@ impl Tetris {
 
         let rotated_current_shape = self.current_shape.rotated();
 
-        if
-            !self.is_out_of_bounds(&rotated_current_shape) &&
-            !self.is_colliding(&rotated_current_shape)
+        if !self.is_out_of_bounds(&rotated_current_shape)
+            && !self.is_colliding(&rotated_current_shape)
         {
             self.current_shape = rotated_current_shape;
         }
